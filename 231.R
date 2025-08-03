@@ -3,7 +3,7 @@
           #####################
 
 # predefined 1 Million iterations for every tests
-n <- 1000000
+n <- 1000
 
 # Accept reject method #
 
@@ -47,16 +47,16 @@ box_muller <- function(n) {
   u <- runif(n, 0, 1)
   v <- runif(n, 0, 1)
   
-  z1 <- sqrt(-2*log(u1)+cos(2*pi*v))
-  z2 <- sqrt(-2*log(u1)+sin(2*pi*v))
-  return(c(z1, z2))
+  z1 <- sqrt(-2*log(u)+cos(2*pi*v))
+  z2 <- sqrt(-2*log(u)+sin(2*pi*v))
+  return(list(z1 = z1, z2 = z2))
 }
 
-box_muller(1000)
+result <- box_muller(1000)
 
 
-hist(z1)
-hist(z2)
+hist(result$z1)
+hist(result$z2)
 
       #######################
       #improved box muller # 
@@ -235,5 +235,57 @@ print(estimated_mean)
     # Antithetic Sampling # 
     ########################
 
+x <- runif(100)
+y <- 1 - x
+a <- 0
+b <- 1
+u <- runif(n, a, b)
+f_x <- exp(u ^ 2 )
+crude_mean <- mean(f_x) * (b-a)
+se_crude <- sqrt(var(f_x)/ n)
 
 
+v <- runif(n/2, a, b)
+f1 <- exp(v ^ 2)
+f2 <- exp(1 - v ^ 2) # important: will use the function of y = 1-x
+
+f <- (f1+f2) / 2
+
+estimated_mean <- mean(f) * (b-a)
+
+estimated_se <- sqrt(var(f)/ (n/2))
+
+crude_mean
+estimated_mean
+se_crude
+estimated_se
+
+
+#ex2 
+
+
+u <- runif(1000)
+
+f_X <- u^3-7*u^2+1
+
+crude_mean <- mean(f_x)
+
+se_crude <- sqrt(var(f_x)/ 1000)
+
+
+
+v <- runif(500)
+
+f1 <- v^3-7*v^2+1
+f2 <- ((1-v)^3-7*(1-v)^2+1)
+
+f <- abs(f1+f2) / 2
+
+esti_mean <- mean(f)
+
+esti_se <- sqrt(var(f) / 500)
+
+crude_mean
+se_crude
+esti_mean
+esti_se
