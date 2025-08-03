@@ -1,9 +1,9 @@
-          ######################
-          # Accept and Reject #
-          #####################
+######################
+# Accept and Reject #
+#####################
 
 # predefined 1 Million iterations for every tests
-n <- 1000
+n <- 1000000
 
 # Accept reject method #
 
@@ -58,9 +58,9 @@ result <- box_muller(1000)
 hist(result$z1)
 hist(result$z2)
 
-      #######################
-      #improved box muller # 
-      #######################
+#######################
+#improved box muller # 
+#######################
 
 improved_box_muller <- function(n) {
   Z1 <- c()
@@ -86,9 +86,9 @@ result <- improved_box_muller(n)
 
 hist(result$Z1)
 hist(result$Z2)
-          ######################################
-            # Monte Carlo: Hit and Miss method # 
-          ######################################
+######################################
+# Monte Carlo: Hit and Miss method # 
+######################################
 f <- function(x) {
   return(2*x - 1)
 }
@@ -109,10 +109,10 @@ hit_miss <- function(f, n, a, b, c, d) {
 }
 
 hit_miss(f, n, 3, 5, 5, 9)
-    
-    ########################
-    # improved monte carlo # 
-    ########################
+
+########################
+# improved monte carlo # 
+########################
 
 
 imrpoved_hit_miss <- function(f, n, a, b) {
@@ -279,7 +279,7 @@ v <- runif(500)
 f1 <- v^3-7*v^2+1
 f2 <- ((1-v)^3-7*(1-v)^2+1)
 
-f <- abs(f1+f2) / 2
+f <- (f1+f2) / 2
 
 esti_mean <- mean(f)
 
@@ -289,3 +289,267 @@ crude_mean
 se_crude
 esti_mean
 esti_se
+
+#ex3
+
+
+set.seed(1986)
+a <- 2
+b <- 3
+
+
+#crude estimation
+
+u <- runif(n, a, b)
+f_X <- (u^3-7*u^2+1) 
+crude_i_hat <- mean(f_x) * (b-a)
+crude_se <- sqrt(var(f_x) / n)
+
+# antithetic estimation
+
+v <- runif(n/2, a, b)
+v1 <- a + (b-a) * v
+v2 <- a + (b-a) * (1-v)
+
+f1 <- (v1^3-7*v1^2+1)  
+
+f2 <- ((v2)^3-7*(v2)^2+1)  
+
+f <- (f1+f2) / 2
+
+anti_mean <- mean(f) * (b-a)
+
+
+anti_se <- sqrt(var(f) / (n/2))
+
+
+crude_i_hat
+crude_se
+
+anti_mean
+anti_se
+
+
+        ########################
+        #    Control variate   # 
+        ########################
+
+n = 100000
+x <- rnorm(n, mean = 3, sd = 2)
+y <- rnorm(n, mean = 2, sd = 1)
+
+ey <- mean(y) # bujhi na
+
+mean_x <- mean(x)
+mean_y <- mean(y)
+
+cov_xy <- cov(x, y)
+var_y <- var(y)
+
+c <- cov_xy / var_y
+
+control_estimate <- mean(x) - c * (mean_y - ey)
+control_estimate
+
+var_x <- var(x) / n
+
+var_control_estimate <- var(x - c*(y - ey)) / n
+var_control_estimate
+
+
+reduction <- (1 - (var_control_estimate/var_x)) * 100
+reduction
+
+
+
+#Using functions x ^ 2 and x 
+
+
+fx <- function(x) x ^ 2
+gx <- function(x) x
+
+
+e_gx <- mean(g)
+
+x <- runif(n)
+
+f <- fx(x)
+g <- gx(x)
+
+meanf <- mean(f)
+meang <- mean(g)
+
+covfg <- cov(f,g)
+
+varg <- var(g)
+varf <- var(y) / n
+
+c <- covfg/varg
+c
+
+var_estimate <- var(f - c * (g - e_gx)) / n
+
+
+reduction <- (1 - (var_estimate/varf)) * 100
+reduction
+
+# exercise 3(c)
+
+fx<-function(x) sqrt(1-x^2)
+gx<-function(x) 1-x
+
+u <- runif(n)
+
+f <- fx(u)
+g <- gx(u)
+
+e_gx <- 0.5
+
+covfg <- cov(f, g)
+varg <- var(g)
+varf <- var(f) / n
+
+
+estimated_var <- var(f - c * (g - e_gx)) / n
+estimated_var
+
+
+reduction <-  (1 - (estimated_var/varf)) * 100
+reduction
+
+cor(f, g)^2 * 100
+
+
+#### END OF CONTROL VARIATE ###
+
+
+          ##############################
+          #    Sampling Distribution   # 
+          ##############################
+
+
+# sampling
+norm <- rnorm(10000, mean = 100, sd = 15)
+size <- 100
+
+draw <- sample(norm, 100, replace = T)
+hist(draw)
+
+mean(draw)
+sd(draw)
+
+
+# bootstrapping var
+
+bootstrap_var <- replicate(1000, var(sample(rnorm(1000, 100, 15), 1000, replace = T)))
+mean(bootstrap_var)
+sd(bootstrap_var)
+hist(bootstrap_var)
+
+# bootstrapping mean
+
+bootstrap_mean <- replicate(1000, mean(sample(rnorm(1000, 100, 15), 1000, replace = T)))
+mean(bootstrap_mean)
+sd(bootstrap_mean)
+hist(bootstrap_mean)
+
+
+# bootstrapping sd
+
+bootstrap_sd <- replicate(1000, sd(sample(rnorm(1000, 100, 15), 1000, replace = T)))
+mean(bootstrap_sd)
+sd(bootstrap_sd)
+hist(bootstrap_sd)
+
+
+
+
+# sample distn using for loop
+
+
+population <- rnorm(10000, 100, 15)
+
+sample_dist_mean <- c()
+sample_dist_var <- c()
+sample_dist_sd <- c()
+for(i in 1:10000) {
+  x <- sample(population, 1000, replace = T)
+  sample_dist_mean <- c(sample_dist_mean, mean(x))
+  sample_dist_var <- c(sample_dist_var, var(x))
+  sample_dist_sd <- c(sample_dist_sd, var(x))
+}
+
+par(mfrow = c(1, 3))
+
+hist(sample_dist_mean)
+hist(sample_dist_var)
+hist(sample_dist_sd)
+
+
+      
+        #############################
+        #    Hypothesis Testing     # 
+        #############################
+
+#Suppose the food label on a cookie bag states that there is 2 grams of saturated 
+# fat in a single cookie. 
+# In a sample of 35 cookies, it is found that the mean amount of saturated 
+# fat per cookie is 2.2 grams with
+# a standard deviation is 0.3 gram. At .05 significance level, 
+# can we reject the claim on food label?
+
+mu <- 2
+n <- 35
+xbar <- 2.2
+
+std <- 0.3
+
+alpha <- 0.05
+
+t.test <- qt(alpha/2, df = n-1)
+
+ifelse(t.test < 0, 'Lower Tail True', 'Lower Tail False')
+
+pval <-  pt((xbar-mu) / sqrt(std/n), df = n-1, lower.tail = T)
+pval
+
+      #############################
+      #    Proportion Test        # 
+      #############################
+p0 <- 0.3
+np <- 163
+n <- 600
+p <- np / n
+
+p.stat <- (p-p0) / sqrt((p0 * (1-p0))/n)
+p.stat
+
+alpha = 0.01
+z <- qnorm(alpha)
+ifelse(p.stat < z, 'Reject the null', 'May not reject the null')
+
+
+# mtcars testing
+
+total_counts <- length(mtcars$am)
+print(total_counts)
+
+
+p_0=0.6
+p_mean <- mean(mtcars$am)
+sigma <- p0 * (1-p0)
+total_counts
+
+z <- qnorm(0.03)
+z
+
+
+# left tail
+p <- pnorm(stat, lower.tail = T)
+
+
+stat <- (p_mean - p0) / sqrt(sigma / total_counts)
+stat
+ifelse(p < z, 'Reject the null', 'May not reject the null')
+
+
