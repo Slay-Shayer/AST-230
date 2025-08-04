@@ -21,7 +21,7 @@ g_x <- function(x) {
   return(exp(x))
 }
 
-c <- f_x(1) / g_x(1)
+c <- f_x(1) / g_x(1) # maximum value
 
 
 accept_reject_method <- function(f, g, n, a, b, c) {
@@ -58,9 +58,9 @@ result <- box_muller(1000)
 hist(result$z1)
 hist(result$z2)
 
-#######################
-#improved box muller # 
-#######################
+  #######################
+  #improved box muller # 
+  #######################
 
 improved_box_muller <- function(n) {
   Z1 <- c()
@@ -114,17 +114,18 @@ hit_miss(f, n, 3, 5, 5, 9)
 # improved monte carlo # 
 ########################
 
-
+n <- 1000
 imrpoved_hit_miss <- function(f, n, a, b) {
   func <- c()
   for(i in 1:n) {
     y = runif(1, a, b)
     func[i] <- f(y)
   }
-  return(sum(func)/n * (b-a))
+  return(list(density = sum(func)/n * (b-a), fun = func))
 }
 
-imrpoved_hit_miss(f, n, 3, 5)
+retult <- imrpoved_hit_miss(f, n, 3, 5)
+plot(1:n, result$fun[1:n], type = 'l')
 
       ########################
       # Importance sampling # 
@@ -240,6 +241,8 @@ y <- 1 - x
 a <- 0
 b <- 1
 u <- runif(n, a, b)
+
+
 f_x <- exp(u ^ 2 )
 crude_mean <- mean(f_x) * (b-a)
 se_crude <- sqrt(var(f_x)/ n)
