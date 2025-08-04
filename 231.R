@@ -271,9 +271,9 @@ u <- runif(1000)
 
 f_X <- u^3-7*u^2+1
 
-crude_mean <- mean(f_x)
+crude_mean <- mean(f_x(u))
 
-se_crude <- sqrt(var(f_x)/ 1000)
+se_crude <- sqrt(var(f_x(u))/ 1000)
 
 
 
@@ -310,7 +310,7 @@ crude_se <- sqrt(var(f_x) / n)
 
 # antithetic estimation
 
-v <- runif(n/2, a, b)
+v <- runif(n/2, 0, 1)
 v1 <- a + (b-a) * v
 v2 <- a + (b-a) * (1-v)
 
@@ -555,4 +555,25 @@ stat <- (p_mean - p0) / sqrt(sigma / total_counts)
 stat
 ifelse(p < z, 'Reject the null', 'May not reject the null')
 
+    #############################
+    #    congruence generator   # 
+    #############################
 
+n <- 10
+a <- 1664525
+c <- 1013904223
+m <- 2^32
+
+lcg <- function(n, seed, a, c, m) {
+  result <- numeric(n)
+  result[1] <- seed
+  for(i in 2:n) {
+    result[i] <- (c + a * result[i-1]) %% m
+  }
+  return(result / m)
+}
+
+final_lcg <- lcg(n, 1000, a, c, m)
+final_lcg
+
+plot(1:n, final_lcg, type = 'b')
