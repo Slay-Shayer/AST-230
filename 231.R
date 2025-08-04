@@ -21,7 +21,7 @@ g_x <- function(x) {
   return(exp(x))
 }
 
-c <- f_x(1) / g_x(1) # maximum value
+c <-f_x(1) / g_x(1) # maximum value
 
 
 accept_reject_method <- function(f, g, n, a, b, c) {
@@ -269,11 +269,11 @@ estimated_se
 
 u <- runif(1000)
 
-f_X <- u^3-7*u^2+1
+f_x <- u^3-7*u^2+1
 
-crude_mean <- mean(f_x(u))
+crude_mean <- mean(f_x)
 
-se_crude <- sqrt(var(f_x(u))/ 1000)
+se_crude <- sqrt(var(f_x)/ 1000)
 
 
 
@@ -297,6 +297,7 @@ esti_se
 
 
 set.seed(1986)
+n <- 100000
 a <- 2
 b <- 3
 
@@ -304,8 +305,8 @@ b <- 3
 #crude estimation
 
 u <- runif(n, a, b)
-f_X <- (u^3-7*u^2+1) 
-crude_i_hat <- mean(f_x) * (b-a)
+f_x <- (u^3-7*u^2+1) 
+crude_i_hat <- sum(f_x) / n * (b - a)
 crude_se <- sqrt(var(f_x) / n)
 
 # antithetic estimation
@@ -362,8 +363,8 @@ var_control_estimate
 
 reduction <- (1 - (var_control_estimate/var_x)) * 100
 reduction
-
-
+ 
+cor(x, y) ^ 2 * 100
 
 #Using functions x ^ 2 and x 
 
@@ -574,6 +575,6 @@ lcg <- function(n, seed, a, c, m) {
 }
 
 final_lcg <- lcg(n, 1000, a, c, m)
-final_lcg
+final_lcg # results has to be between (0, 1]
 
 plot(1:n, final_lcg, type = 'b')
